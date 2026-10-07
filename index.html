@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20252b">
+<title>家族のお酒記録</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f4f6;color:#20242a;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif}.app{max-width:540px;margin:auto;min-height:100vh;background:#fff}header{background:#20252b;color:#fff;padding:22px 18px}header h1{font-size:22px;margin:0 0 5px}header p{font-size:12px;color:#d9dde2;margin:0}main{padding:16px 14px 110px}.card{border:1px solid #e1e4e7;border-radius:18px;padding:17px;margin-bottom:13px;box-shadow:0 3px 12px #00000008}h2{font-size:17px;margin:0 0 13px}label{display:block;font-size:13px;font-weight:800;margin:12px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #cfd4da;border-radius:12px;font:inherit;background:#fff}.row{display:flex;gap:9px}.row>*{flex:1}button{font:inherit;font-weight:800;border:0;border-radius:12px;padding:12px 14px;cursor:pointer;touch-action:manipulation}.primary{background:#20252b;color:#fff;width:100%}.secondary{background:#eef0f2;color:#20252b}.toggle{display:flex;background:#eef0f2;padding:4px;border-radius:12px;gap:4px}.toggle button{flex:1;background:transparent;padding:10px}.toggle button.selected{background:#fff;box-shadow:0 1px 5px #0002}.choice{display:flex;gap:8px;flex-wrap:wrap}.choice button{background:#eef0f2;font-size:13px}.choice button.selected{background:#20252b;color:#fff}.bigresult{background:#f6f7f8;border-radius:15px;padding:15px;text-align:center;margin-top:13px}.bigresult .g{font-size:30px;font-weight:900}.bigresult small{color:#666}.notice{background:#f7f8fa;border-left:4px solid #20252b;border-radius:9px;padding:11px;font-size:12px;line-height:1.6}.summary{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{background:#f6f7f8;border-radius:14px;padding:13px}.metric small{color:#666}.metric strong{display:block;font-size:21px;margin-top:4px}.line{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:9px 0;font-size:13px;gap:10px}.line span{overflow-wrap:anywhere}.muted{color:#6b7075;font-size:12px}.tab{display:none}.tab.active{display:block}.nav{position:fixed;bottom:0;left:0;right:0;max-width:540px;margin:auto;background:#fff;border-top:1px solid #ddd;display:flex;padding:7px 8px env(safe-area-inset-bottom);z-index:999}.nav button{flex:1;background:#fff;color:#666;font-size:11px;padding:8px 3px}.nav button.active{color:#111}.report{border:2px solid #20252b;border-radius:15px;padding:16px}.report h3{margin:0 0 10px;font-size:16px}ul{padding-left:20px;line-height:1.8;font-size:13px}.danger{background:#fff0f0;color:#b42318;width:100%}.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+<header><h1>家族のお酒記録</h1><p>家族が記録し、医療機関で状況を共有するための記録アプリ</p></header>
+<main>
+<section id="home" class="tab active">
+<div class="card"><h2>今日の状況</h2><div class="summary"><div class="metric"><small>今日の純アルコール</small><strong id="todayAlcohol">0.0 g</strong></div><div class="metric"><small>今月の飲酒日数</small><strong id="drinkDays">0 日</strong></div></div></div>
+<div class="card"><h2>今日の記録</h2><button id="goRecord" class="primary">＋ 飲酒を記録する</button><button id="noDrink" class="secondary" style="width:100%;margin-top:8px">今日は飲酒なし</button></div>
+<div class="card"><h2>最近の記録</h2><div id="recent"></div></div>
+</section>
+<section id="record" class="tab"><div class="card"><h2>飲酒量を記録</h2>
+<label>日付</label><input id="date" type="date">
+<label>お酒の種類</label><select id="type"><option value="beer">ビール</option><option value="chuhai">チューハイ・サワー</option><option value="sake">日本酒</option><option value="shochu">焼酎</option><option value="whisky">ウイスキー</option><option value="wine">ワイン</option><option value="plum">梅酒</option><option value="other">その他</option></select>
+<label>入力方法</label><div class="toggle"><button id="modeCount" class="selected">本数・杯数で入力</button><button id="modeMl">mLで直接入力</button></div>
+<div id="countArea"><label>1本・1杯あたりの量</label><div class="row"><select id="unitMl"><option value="350">350 mL</option><option value="500">500 mL</option><option value="250">250 mL</option><option value="180">180 mL（1合）</option><option value="90">90 mL</option><option value="30">30 mL</option><option value="720">720 mL</option><option value="other">その他</option></select><input id="customUnitMl" class="hidden" type="number" min="1" placeholder="mL"></div>
+<label>本数・杯数</label><div class="row"><input id="count" type="number" min="0.1" step="0.1" value="1"><select id="unitName"><option>本</option><option>杯</option><option>合</option><option>ショット</option></select></div></div>
+<div id="mlArea" class="hidden"><label>飲酒量（mL）</label><input id="ml" type="number" min="1" value="350"></div>
+<label>アルコール度数（%）</label><input id="abv" type="number" min="0" step="0.1" value="5">
+<div class="bigresult"><small>今回の飲酒量</small><div><b id="totalMl">350</b> mL</div><small>純アルコール量</small><div class="g" id="alcohol">14.0 g</div><small>飲酒量 × 度数 ÷ 100 × 0.8</small></div>
+<div class="notice" style="margin-top:12px">「350mL缶を2本」のように入力すると2本分を自動計算します。グラスなどはmL直接入力もできます。</div>
+<label>飲酒開始・終了</label><div class="row"><input id="start" type="time"><input id="end" type="time"></div>
+<label>飲酒後の様子（家族から見た記録）</label><div class="choice" id="observations"><button>普段と変わらない</button><button>顔が赤い</button><button>ふらつき</button><button>ろれつが回らない</button><button>怒りっぽい</button><button>同じ話を繰り返す</button><button>転倒</button><button>嘔吐</button><button>記憶が曖昧</button></div>
+<label>家族メモ</label><textarea id="memo" rows="3" placeholder="気になったこと"></textarea><button id="saveDrink" class="primary" style="margin-top:14px">この記録を保存</button>
+</div></section>
+<section id="reportTab" class="tab"><div class="card"><h2>医療機関向け報告</h2><div class="notice">診断を行うものではありません。飲酒状況と家族の観察情報を、医療者が確認しやすい形に整理します。</div></div><div class="report" id="report"><h3>飲酒状況報告書</h3><div class="line"><span>対象者</span><b id="rPerson">未設定</b></div><div class="line"><span>記録期間</span><b id="period"></b></div><div class="line"><span>記録件数</span><b id="recordsCount"></b></div><div class="line"><span>飲酒日数</span><b id="reportDrinkDays"></b></div><div class="line"><span>休肝日</span><b id="restDays"></b></div><div class="line"><span>純アルコール合計</span><b id="totalAlcohol"></b></div><div class="line"><span>飲酒日の平均</span><b id="avgAlcohol"></b></div><h3 style="margin-top:17px">飲酒内容</h3><ul id="drinkDetails"></ul><h3>家族による観察</h3><ul id="obsList"></ul><h3>家族からのコメント</h3><p id="memoList" style="white-space:pre-wrap;font-size:13px"></p></div><button id="shareReport" class="primary" style="margin-top:12px">医療機関へ共有・保存</button></section>
+<section id="settings" class="tab"><div class="card"><h2>家族・対象者設定</h2><label>対象者の呼び名</label><input id="person" placeholder="例：父、お父さん"><label>記録する家族</label><input id="family" placeholder="例：長男"><button id="saveSettings" class="primary" style="margin-top:13px">設定を保存</button></div><div class="card"><h2>データについて</h2><p class="muted">試作版では端末のブラウザ内に保存します。オンラインで医療機関へ送信する機能は、同意・認証・暗号化などを設計してから追加します。</p><button id="clearData" class="danger">この端末の記録を削除</button></div></section>
+</main>
+<nav class="nav"><button data-tab="home" class="active">🏠<br>ホーム</button><button data-tab="record">✚<br>記録</button><button data-tab="reportTab">📄<br>報告</button><button data-tab="settings">⚙️<br>設定</button></nav>
+</div>
+<script>
+(function(){
+'use strict';
+var KEY='familyAlcoholAppV3';
+var data={records:[],settings:{}};
+try{data=JSON.parse(localStorage.getItem(KEY)||'null')||data}catch(e){}
+var mode='count';
+var defaults={beer:[5,350,'本'],chuhai:[5,350,'本'],sake:[15,180,'合'],shochu:[25,100,'杯'],whisky:[40,30,'ショット'],wine:[12,120,'杯'],plum:[10,100,'杯'],other:[5,350,'本']};
+function $(id){return document.getElementById(id)}
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function today(){return new Date().toISOString().slice(0,10)}
+function showTab(id){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});$(id).classList.add('active');document.querySelectorAll('.nav button').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-tab')===id)});refresh()}
+document.querySelectorAll('.nav button').forEach(function(b){b.addEventListener('click',function(){showTab(b.getAttribute('data-tab'))})});
+$('goRecord').addEventListener('click',function(){showTab('record')});
+$('noDrink').addEventListener('click',function(){data.records.push({date:today(),noDrink:true,alcohol:0,obs:[],memo:''});save();alert('今日は「飲酒なし」と記録しました');refresh()});
+function setMode(m){mode=m;$('modeCount').classList.toggle('selected',m==='count');$('modeMl').classList.toggle('selected',m==='ml');$('countArea').classList.toggle('hidden',m!=='count');$('mlArea').classList.toggle('hidden',m!=='ml');calc()}
+$('modeCount').addEventListener('click',function(){setMode('count')});$('modeMl').addEventListener('click',function(){setMode('ml')});
+function setDefaults(){var d=defaults[$('type').value]||defaults.other;$('abv').value=d[0];$('unitMl').value=String(d[1]);$('count').value=1;$('unitName').value=d[2];$('ml').value=d[1];$('customUnitMl').classList.add('hidden');calc()}
+$('type').addEventListener('change',setDefaults);$('unitMl').addEventListener('change',function(){$('customUnitMl').classList.toggle('hidden',$('unitMl').value!=='other');calc()});['customUnitMl','count','ml','abv'].forEach(function(id){$(id).addEventListener('input',calc)});
+function calc(){var total=0;if(mode==='count'){var u=$('unitMl').value==='other'?Number($('customUnitMl').value)||0:Number($('unitMl').value);total=u*(Number($('count').value)||0)}else total=Number($('ml').value)||0;var a=Number($('abv').value)||0;$('totalMl').textContent=Math.round(total);$('alcohol').textContent=(total*a/100*0.8).toFixed(1)+' g';return {ml:total,alcohol:total*a/100*0.8}}
+$('observations').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){b.classList.toggle('selected')})});
+$('saveDrink').addEventListener('click',function(){var c=calc();if(c.ml<=0){alert('飲酒量を入力してください');return}var detail;if(mode==='count'){var u=$('unitMl').value==='other'?Number($('customUnitMl').value)||0:Number($('unitMl').value);detail=u+'mL × '+(Number($('count').value)||0)+$('unitName').value}else detail=c.ml+'mL';data.records.push({date:$('date').value||today(),type:$('type').selectedOptions[0].text,ml:c.ml,abv:Number($('abv').value)||0,alcohol:c.alcohol,detail:detail,start:$('start').value,end:$('end').value,obs:Array.from($('observations').querySelectorAll('.selected')).map(function(x){return x.textContent}),memo:$('memo').value});save();alert('保存しました');$('memo').value='';$('observations').querySelectorAll('button').forEach(function(x){x.classList.remove('selected')});showTab('home')});
+$('saveSettings').addEventListener('click',function(){data.settings.person=$('person').value;data.settings.family=$('family').value;save();alert('設定を保存しました')});
+$('clearData').addEventListener('click',function(){if(confirm('この端末の記録をすべて削除しますか？')){localStorage.removeItem(KEY);location.reload()}});
+$('shareReport').addEventListener('click',async function(){var text=$('report').innerText;try{if(navigator.share){await navigator.share({title:'飲酒状況報告',text:text})}else{alert('この端末では共有機能が利用できません。報告画面をスクリーンショットして保存してください。')}}catch(e){}});
+function refresh(){var t=today(),month=t.slice(0,7),todayRows=data.records.filter(function(r){return r.date===t&&!r.noDrink});$('todayAlcohol').textContent=todayRows.reduce(function(s,r){return s+(r.alcohol||0)},0).toFixed(1)+' g';$('drinkDays').textContent=new Set(data.records.filter(function(r){return r.date.indexOf(month)===0&&!r.noDrink}).map(function(r){return r.date})).size+' 日';var recent=data.records.slice().sort(function(a,b){return b.date.localeCompare(a.date)}).slice(0,8);$('recent').innerHTML=recent.length?recent.map(function(r){return '<div class="line"><span>'+r.date+'　'+(r.noDrink?'飲酒なし':r.type+' '+r.detail)+'</span><b>'+(r.noDrink?'—':r.alcohol.toFixed(1)+'g')+'</b></div>'}).join(''):'<p class="muted">まだ記録がありません。</p>';renderReport();$('person').value=data.settings.person||'';$('family').value=data.settings.family||''}
+function renderReport(){var dates=data.records.map(function(r){return r.date}).sort(),end=dates.length?dates[dates.length-1]:today(),d=new Date(end);d.setDate(d.getDate()-29);var start=d.toISOString().slice(0,10),rs=data.records.filter(function(r){return r.date>=start&&r.date<=end}),dd=new Set(rs.filter(function(r){return !r.noDrink}).map(function(r){return r.date})),total=rs.reduce(function(s,r){return s+(r.alcohol||0)},0);$('rPerson').textContent=data.settings.person||'未設定';$('period').textContent=start+' ～ '+end;$('recordsCount').textContent=rs.length+'件';$('reportDrinkDays').textContent=dd.size+'日';$('restDays').textContent=Math.max(0,30-dd.size)+'日';$('totalAlcohol').textContent=total.toFixed(1)+' g';$('avgAlcohol').textContent=(dd.size?total/dd.size:0).toFixed(1)+' g/飲酒日';var dr=rs.filter(function(r){return !r.noDrink});$('drinkDetails').innerHTML=dr.length?dr.map(function(r){return '<li>'+r.date+'：'+r.type+' '+r.detail+'（'+r.alcohol.toFixed(1)+'g）</li>'}).join(''):'<li>飲酒記録なし</li>';var counts={},memos=[];rs.forEach(function(r){(r.obs||[]).forEach(function(o){counts[o]=(counts[o]||0)+1});if(r.memo)memos.push(r.date+'：'+r.memo)});$('obsList').innerHTML=Object.keys(counts).length?Object.keys(counts).map(function(k){return '<li>'+k+'：'+counts[k]+'回</li>'}).join(''):'<li>記録なし</li>';$('memoList').textContent=memos.length?memos.join('\n'):'特記事項なし'}
+$('date').value=today();setDefaults();refresh();
+})();
+</script>
+</body></html>
